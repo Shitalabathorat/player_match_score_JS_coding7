@@ -108,8 +108,9 @@ app.get("/players/:playerId/matches", async (request, response) => {
     )
   );
 });
+
 //API 6th In Incorrect
-const convertResponseObject = (dbObject) => {
+const convertPlayerResponseObject = (dbObject) => {
   return {
     playerId: dbObject.player_id,
     playerName: dbObject.player_name,
@@ -126,17 +127,17 @@ app.get("/matches/:matchId/players", async (request, response) => {
         WHERE match_id=${matchId};`;
 
   let player = await db.get(getPlayerQuery);
-  response.send(convertResponseObject(player));
+  response.send(convertPlayerResponseObject(player));
 });
 
 //API 4 It is wrong
-const convertMatchResponseObject = (dbObject) => {
-  return {
-    matchId: dbObject.match_id,
-    matchName: dbObject.match,
-    year: dbObject.year,
-  };
-};
+//const convertMatchResponseObject = (dbObject) => {
+//return {
+// matchId: dbObject.match_id,
+//// matchName: dbObject.match,
+//year: dbObject.year,
+// };
+//};
 
 app.get("/matches/:matchId/", async (request, response) => {
   const { matchId } = request.params;
@@ -144,8 +145,14 @@ app.get("/matches/:matchId/", async (request, response) => {
     SELECT * 
     FROM match_details
     WHERE match_id=${matchId};`;
-  let mat = await db.get(getPlayerQuery);
-  response.send(convertMatchResponseObject(mat));
+  let mathArray = await db.get(getPlayerQuery);
+  response.send(
+    matchArray.map((eachMatch) => ({
+      matchId: dbObject.match_id,
+      matchName: dbObject.match,
+      year: dbObject.year,
+    }))
+  );
 });
 
 //7th API Is is INcorrect
@@ -178,3 +185,4 @@ WHERE player_details.player_id = ${playerId};
 });
 
 module.exports = app;
+
