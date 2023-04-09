@@ -126,26 +126,19 @@ app.get("/matches/:matchId/players", async (request, response) => {
 	    FROM player_match_score NATURAL JOIN player_details
         WHERE match_id=${matchId};`;
 
-  let player = await db.get(getPlayerQuery);
+  let player = await db.get(getMatchPlayersQuery);
   response.send(convertPlayerResponseObject(player));
 });
 
 //API 4 It is wrong
-//const convertMatchResponseObject = (dbObject) => {
-//return {
-// matchId: dbObject.match_id,
-//// matchName: dbObject.match,
-//year: dbObject.year,
-// };
-//};
 
 app.get("/matches/:matchId/", async (request, response) => {
   const { matchId } = request.params;
-  const getPlayerQuery = `
-    SELECT * 
+  const getMatchQuery = `
+    SELECT *
     FROM match_details
     WHERE match_id=${matchId};`;
-  let mathArray = await db.get(getPlayerQuery);
+  let matchArray = await db.get(getMatchQuery);
   response.send(
     matchArray.map((eachMatch) => ({
       matchId: dbObject.match_id,
@@ -155,7 +148,7 @@ app.get("/matches/:matchId/", async (request, response) => {
   );
 });
 
-//7th API Is is INcorrect
+//7th API
 
 app.get("/players/:playerId/playerScores", async (request, response) => {
   const { playerId } = request.params;
@@ -175,4 +168,3 @@ WHERE player_details.player_id = ${playerId};
 });
 
 module.exports = app;
-
