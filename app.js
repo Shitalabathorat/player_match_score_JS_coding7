@@ -156,15 +156,7 @@ app.get("/matches/:matchId/", async (request, response) => {
 });
 
 //7th API Is is INcorrect
-const convertMatchDetailsResponseObject = (dbObject) => {
-  return {
-    playerId: dbObject.player_id,
-    playerName: dbObject.player_name,
-    totalScore: dbObject.score,
-    totalFours: dbObject.SUM(fours),
-    totalSixes: dbObject.SUM(sixes),
-  };
-};
+
 app.get("/players/:playerId/playerScores", async (request, response) => {
   const { playerId } = request.params;
   const getPlayerScored = `
@@ -178,10 +170,8 @@ player_details INNER JOIN player_match_score ON
 player_details.player_id = player_match_score.player_id
 WHERE player_details.player_id = ${playerId};
 `;
-  const playerScore = await db.get(getPlayerScoredQuery);
-  response.send(
-    playerScore.map((eachMatch) => convertMatchDetailsResponseObject(eachMatch))
-  );
+  const playerScore = await db.get(getPlayerScored);
+  response.send(playerScore);
 });
 
 module.exports = app;
