@@ -110,12 +110,6 @@ app.get("/players/:playerId/matches", async (request, response) => {
 });
 
 //API 6th In Incorrect
-const convertPlayerResponseObject = (dbObject) => {
-  return {
-    playerId: dbObject.player_id,
-    playerName: dbObject.player_name,
-  };
-};
 
 app.get("/matches/:matchId/players", async (request, response) => {
   const { matchId } = request.params;
@@ -126,11 +120,18 @@ app.get("/matches/:matchId/players", async (request, response) => {
 	    FROM player_match_score NATURAL JOIN player_details
         WHERE match_id=${matchId};`;
 
-  let player = await db.get(getMatchPlayersQuery);
-  response.send(convertPlayerResponseObject(player));
+  let player = await db.all(getMatchPlayersQuery);
+  response.send(player);
 });
 
 //API 4 It is wrong
+////const convertMatchResponseObject = (dbObject) => {
+// return {
+//matchId: dbObject.match - id,
+//match: dbObject.match,
+// year: dbObject.year,
+//};
+//};
 
 app.get("/matches/:matchId/", async (request, response) => {
   const { matchId } = request.params;
@@ -138,14 +139,13 @@ app.get("/matches/:matchId/", async (request, response) => {
     SELECT *
     FROM match_details
     WHERE match_id=${matchId};`;
-  let matchArray = await db.get(getMatchQuery);
-  response.send(
-    matchArray.map((eachMatch) => ({
-      matchId: dbObject.match_id,
-      matchName: dbObject.match,
-      year: dbObject.year,
-    }))
-  );
+  let match = await db.get(getMatchQuery);
+  //response.send(convertMatchResponseObject(match));
+  response.send({
+    matchId: dbObject.match_id,
+    match: dbObject.match,
+    year: dbObject.year,
+  });
 });
 
 //7th API
